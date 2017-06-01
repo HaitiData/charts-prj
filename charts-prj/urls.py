@@ -8,6 +8,6 @@ urlpatterns = patterns('',
        TemplateView.as_view(template_name='site_index.html'),
        name='home'),
  ) + urlpatterns + [
-    url(r'^charts/', include('charts-app.urls')),
+    url(r'^chart/', include('charts-app.urls')),
     url(r'^table/', include('wfs-harvest.urls')),
     ]

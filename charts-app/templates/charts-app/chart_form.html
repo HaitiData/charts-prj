@@ -1,0 +1,67 @@
+<style>
+
+.arc text {
+  font: 10px sans-serif;
+  text-anchor: middle;
+}
+
+.arc path {
+  stroke: #fff;
+}
+
+</style>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+
+<h1>{{ form.typename.value }}</h1>
+<svg width="960" height="500"></svg>
+<script>
+var svg = d3.select("svg"),
+    width = +svg.attr("width"),
+    height = +svg.attr("height"),
+    radius = Math.min(width, height) / 2,
+    g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+var pie = d3.pie()
+    .sort(null)
+    .value(function(d) { return d.{{ form.quantity.value }}; });
+
+var path = d3.arc()
+    .outerRadius(radius - 10)
+    .innerRadius(0);
+
+var label = d3.arc()
+    .outerRadius(radius - 40)
+    .innerRadius(radius - 40);
+
+
+d3.csv("/table?lyrname={{ form.typename.value }}&category={{ form.category.value }}&quantity={{ form.quantity.value }}", function(d) {
+  d.area = +d.area;
+  if (d.area !== 0) {
+  return d;}
+}, function(error, data) {
+  if (error) throw error;
+
+  var arc = g.selectAll(".arc")
+    .data(pie(data))
+    .enter().append("g")
+      .attr("class", "arc");
+
+  arc.append("path")
+      .attr("d", path)
+      .attr("fill", function(d) { return color(d.data.{{ form.category.value }}); });
+
+  arc.append("text")
+      .attr("transform", function(d) { return "translate(" + label.centroid(d) + ")"; })
+      .attr("dy", "0.35em")
+      .text(function(d) { return d.data.{{ form.category.value }}; });
+});
+
+</script>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Save Chart"/>
+</form>

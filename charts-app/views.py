@@ -1,10 +1,40 @@
-#from django.shortcuts import render
-
-# Create your views here.
-
 import csv
+
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+
+from .models import Chart
+
+
+class ChartCreate(CreateView):
+    model = Chart
+    fields = '__all__'
+
+    def get_initial(self):
+        initial = self.initial.copy()
+        initial['typename'] = self.request.GET['lyrname']
+        initial['category'] = self.request.GET['category']
+        initial['quantity'] = self.request.GET['quantity']
+        initial['type'] = 'pie'
+        initial['aggr_type'] = 'None'
+        return initial
+
+    def get_context_data(self, **kwargs):
+        ctx = super(ChartCreate, self).get_context_data(**kwargs)
+        print repr(ctx)
+        print repr(ctx['form'].fields)
+        return ctx
+
+
+class ChartUpdate(UpdateView):
+    model = Chart
+    fields = '__all__'
+
+
+class ChartDelete(DeleteView):
+    model = Chart
+    success_url = '/'
 
 
 def get_csv(request):

@@ -3,7 +3,7 @@ import urllib
 from django.test import SimpleTestCase
 from django.core.urlresolvers import reverse
 
-from wfs_csv import views
+from . import views
 
 # Create your tests here.
 class GetFieldsView(SimpleTestCase):
