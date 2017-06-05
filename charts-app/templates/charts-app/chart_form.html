@@ -1,5 +1,38 @@
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form.non_field_errors }}
+<div class="fieldWrapper">
+    {{ form.layer.errors }}
+    {{ form.layer.label }}
+    {{ form.layer }}
+</div>
+<div class="fieldWrapper">
+    {{ form.category.errors }}
+    <label for="{{ form.category.id_for_label }}">Category:</label>
+    <select id="{{ form.category.id_for_label }}" name="category">
+    {% for fieldname in fieldnames %}
+        <option value="{{ fieldname }}">{{ fieldname }}</option>
+    {% endfor %}
+    </select>
+</div>
+<div class="fieldWrapper">
+    {{ form.quantity.errors }}
+    <label for="{{ form.quantity.id_for_label }}">Quantity:</label>
+    <select id="{{ form.quantity.id_for_label }}" name="quantity">
+    {% for fieldname in num_fieldnames %}
+        <option value="{{ fieldname }}">{{ fieldname }}</option>
+    {% endfor %}
+    </select>
+</div>
+<div class="fieldWrapper">
+    {{ form.type.errors }}
+    <label for="{{ form.type.id_for_label }}">Type:</label>
+    {{ form.type }}
+</div>
+<div class="fieldWrapper">
+    {{ form.aggr_type.errors }}
+    <label for="{{ form.aggr_type.id_for_label }}">Aggregation:</label>
+    {{ form.aggr_type }}
+</div>
     <input type="submit" value="Save Chart"/>
 </form>

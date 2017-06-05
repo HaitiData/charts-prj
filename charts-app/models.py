@@ -20,14 +20,12 @@ class Chart(models.Model):
     )
 
     layer = models.ForeignKey(Layer)
-    category = models.CharField(max_length=200,
-                                choices=(('category', 'category'),))
-    quantity = models.CharField(max_length=200,
-                                choices=(('quantity', 'quantity'),))
+    category = models.CharField(max_length=200)
+    quantity = models.CharField(max_length=200)
     type = models.SmallIntegerField(choices=CHART_TYPES, default=0)
     aggr_type = models.SmallIntegerField(choices=AGGREGATION_TYPES, default=3)
 
     def get_absolute_url(self):
-        return reverse('chart_update', kwargs={'pk': self.pk})
+        return reverse('chart_detail', kwargs={'pk': self.pk})
 
 
