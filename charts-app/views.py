@@ -21,12 +21,8 @@ class ChartCreate(CreateView):
 
     def get_initial(self):
         layer_id = self.kwargs['layer_id']
-        layer = Layer.objects.get(pk=layer_id)
         initial = self.initial.copy()
-        initial['typename'] = layer.typename
-        initial['layer'] = layer.id
-        initial['type'] = 'pie'
-        initial['aggr_type'] = 'None'
+        initial['layer'] = layer_id
         return initial
 
     def get_context_data(self, **kwargs):
@@ -34,7 +30,6 @@ class ChartCreate(CreateView):
         layer = Layer.objects.get(pk=layer_id)
         fieldnames, num_fieldnames = get_fields(layer_id)
         ctx = super(ChartCreate, self).get_context_data(**kwargs)
-        ctx['layer'] = layer
         ctx['fieldnames'] = fieldnames
         ctx['num_fieldnames'] = num_fieldnames
         return ctx
