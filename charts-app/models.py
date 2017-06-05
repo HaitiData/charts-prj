@@ -1,9 +1,11 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 
+from geonode.layers.models import Layer
+
 
 class Chart(models.Model):
-    typename = models.CharField(max_length=200)
+    layer = models.ForeignKey(Layer)
     category = models.CharField(max_length=200)
     quantity = models.CharField(max_length=200)
     type = models.CharField(max_length=200)

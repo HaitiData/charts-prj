@@ -16,5 +16,5 @@ class GetFieldsView(SimpleTestCase):
         self.assertTrue(False)
 
     def test_non_existing_field(self):
-        # self.client.get(reverse('wfs-harvest:get_fields'))
+        # self.client.get(reverse('wfs_harvest:get_fields'))
         self.assertTrue(False)

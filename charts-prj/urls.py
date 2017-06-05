@@ -9,5 +9,5 @@ urlpatterns = patterns('',
        name='home'),
  ) + urlpatterns + [
     url(r'^chart/', include('charts-app.urls')),
-    url(r'^table/', include('wfs-harvest.urls')),
+    url(r'^table/', include('wfs_harvest.urls')),
     ]

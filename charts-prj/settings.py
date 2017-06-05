@@ -32,7 +32,7 @@ DEBUG = True
 
 INSTALLED_APPS = INSTALLED_APPS + (
     'charts-app',
-    'wfs-harvest'
+    'wfs_harvest'
 )
 
 ROOT_URLCONF = 'charts-prj.urls'

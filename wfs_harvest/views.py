@@ -38,7 +38,7 @@ def get_fields(request):
         'fieldnames': fieldnames,
         'num_fieldnames': num_fieldnames
     }
-    return render(request, 'wfs-harvest/field_choice.html', context)
+    return render(request, 'wfs_harvest/field_choice.html', context)
 
 
 def get_wfs_csv(request):

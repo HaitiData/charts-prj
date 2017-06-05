@@ -2,9 +2,17 @@ import csv
 
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
+from geonode.layers.models import Layer
+
 from .models import Chart
+from wfs_harvest.utils import get_fields
+
+
+class ChartDetailView(DetailView):
+    model = Chart
 
 
 class ChartCreate(CreateView):
@@ -12,24 +20,30 @@ class ChartCreate(CreateView):
     fields = '__all__'
 
     def get_initial(self):
+        layer_id = self.kwargs['layer_id']
+        layer = Layer.objects.get(pk=layer_id)
         initial = self.initial.copy()
-        initial['typename'] = self.request.GET['lyrname']
-        initial['category'] = self.request.GET['category']
-        initial['quantity'] = self.request.GET['quantity']
+        initial['typename'] = layer.typename
+        initial['layer'] = layer.id
         initial['type'] = 'pie'
         initial['aggr_type'] = 'None'
         return initial
 
     def get_context_data(self, **kwargs):
+        layer_id = self.kwargs['layer_id']
+        layer = Layer.objects.get(pk=layer_id)
+        fieldnames, num_fieldnames = get_fields(layer_id)
         ctx = super(ChartCreate, self).get_context_data(**kwargs)
-        print repr(ctx)
-        print repr(ctx['form'].fields)
+        ctx['layer'] = layer
+        ctx['fieldnames'] = fieldnames
+        ctx['num_fieldnames'] = num_fieldnames
         return ctx
 
 
 class ChartUpdate(UpdateView):
     model = Chart
     fields = '__all__'
+    template_name_suffix = '_update_form'
 
 
 class ChartDelete(DeleteView):

@@ -1,0 +1,58 @@
+<body onload="update_link();">
+<script src="/static/js/csv.js"></script>
+<script src="/static/js/donut.js"></script>
+<script src="/static/js/bar.js"></script>
+<script src="/static/js/pie.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/index.css">
+
+<h1>{{ object.layer.title }}</h1>
+
+<div id="chart_area">
+</div>
+
+<a href="/table?" id="link">Download CSV</a>
+
+<script>
+var typename = "{{ object.layer.typename }}";
+var category = "{{ object.category }}";
+var quantity = "{{ object.quantity }}";
+var agg = "{{ object.aggr_type }}";
+var chart_type = "{{ object.type }}";
+var csv_url;
+
+function update_link(){
+    csv_url = '/table?lyrname=' + typename;
+    csv_url = csv_url + '&category=' + category;
+    csv_url = csv_url + '&quantity=' + quantity;
+    document.getElementById('link').href = csv_url;
+    return;
+}
+update_link();
+
+function get_chart(){
+//create area for chart
+var createChartArea =  function() {
+    var chartArea = document.getElementById("chart_area");
+    chartArea.style= "display:table; float:left; height:100%; width:70%";
+};
+
+// update chart
+    var replaceChart = function(){
+        doc_chart = document.getElementById('chart_area');
+        if(doc_chart.childElementCount >= 1){
+             doc_chart.removeChild(doc_chart.childNodes[1]);
+             createChartArea();
+        };
+};
+
+createChartArea();
+replaceChart();
+getCsv(csv_url, category, quantity, agg, chart_type);
+}
+
+get_chart();
+
+</script>
+</body>
