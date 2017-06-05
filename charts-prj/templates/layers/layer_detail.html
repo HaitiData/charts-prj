@@ -209,7 +209,7 @@
 
       <article id="charts" class="tab-pane">
       <h4>No charts available at this time</h4>
-      <a href="/table/fields?lyrname={{ resource.typename }}">Create Chart</a>
+      <a href="{% url 'chart_add' resource.id %}">Generate Chart</a>
       </article>
 
       <article id="comments" class="tab-pane">
