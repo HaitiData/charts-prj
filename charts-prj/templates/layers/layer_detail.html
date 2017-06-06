@@ -208,8 +208,15 @@
       {% endblock %}
 
       <article id="charts" class="tab-pane">
-      <h4>No charts available at this time</h4>
-      <a href="{% url 'chart_add' resource.id %}">Generate Chart</a>
+      <ul>
+      {% for chart in resource.chart_set.all %}
+        <li><a href="{% url 'chart_detail' chart.id %}">{{ chart.get_type_display }}</a>, Category field = {{chart.category}}, Quantity field = {{chart.quantity}}</li>
+      {% empty %}
+        <li><h4>No charts available at this time</h4></li>
+      {% endfor %}
+      </ul>
+
+      <a href="{% url 'chart_add' resource.id %}">Generate New Chart</a>
       </article>
 
       <article id="comments" class="tab-pane">
