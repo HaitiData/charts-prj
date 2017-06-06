@@ -32,6 +32,7 @@ class ChartCreate(CreateView):
         ctx = super(ChartCreate, self).get_context_data(**kwargs)
         ctx['fieldnames'] = fieldnames
         ctx['num_fieldnames'] = num_fieldnames
+        ctx['layer'] = layer
         return ctx
 
 

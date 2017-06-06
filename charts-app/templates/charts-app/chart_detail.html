@@ -13,6 +13,11 @@
 </div>
 
 <a href="/table?" id="link">Download CSV</a>
+<br>
+<a href="{% url 'chart_update' object.id %}">Modify this Chart</a>
+<br>
+<a href="{% url 'chart_delete' object.id %}">Delete this Chart</a>
+
 
 <script>
 var typename = "{{ object.layer.typename }}";
@@ -31,28 +36,12 @@ function update_link(){
 }
 update_link();
 
-function get_chart(){
-//create area for chart
-var createChartArea =  function() {
-    var chartArea = document.getElementById("chart_area");
-    chartArea.style= "display:table; float:left; height:100%; width:70%";
-};
-
-// update chart
-    var replaceChart = function(){
-        doc_chart = document.getElementById('chart_area');
-        if(doc_chart.childElementCount >= 1){
-             doc_chart.removeChild(doc_chart.childNodes[1]);
-             createChartArea();
-        };
-};
-
-createChartArea();
-replaceChart();
-getCsv(csv_url, category, quantity, agg, chart_type);
-}
-
-get_chart();
-
 </script>
+
+{% include "charts-app/chart_main_script.html" %}
+
+<script>
+get_chart();
+</script>
+
 </body>

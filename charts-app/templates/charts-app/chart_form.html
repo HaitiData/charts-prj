@@ -1,4 +1,18 @@
-<form method="post">
+<body onload="update_link();">
+<script src="/static/js/csv.js"></script>
+<script src="/static/js/donut.js"></script>
+<script src="/static/js/bar.js"></script>
+<script src="/static/js/pie.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/index.css">
+
+<h1>{{ layer.title }}</h1>
+
+<div id="chart_area">
+</div>
+
+<form name="f" method="post" onchange="update_link();">
     {% csrf_token %}
     {{ form.non_field_errors }}
 <div class="fieldWrapper">
@@ -34,5 +48,30 @@
     <label for="{{ form.aggr_type.id_for_label }}">Aggregation:</label>
     {{ form.aggr_type }}
 </div>
+    <input type="button" onclick="get_chart()" value="Create graph">
     <input type="submit" value="Save Chart"/>
 </form>
+
+<a href="/table?" id="link">Download CSV</a>
+
+<script>
+var typename = "{{ layer.typename }}";
+
+var category, quantity, agg, chart_type, csv_url;
+
+function update_link(){
+    csv_url = '/table?lyrname=' + typename;
+    category = document.f.category.value;
+    csv_url = csv_url + '&category=' + category;
+    quantity = document.f.quantity.value;
+    csv_url = csv_url + '&quantity=' + quantity;
+    document.getElementById('link').href = csv_url;
+    agg = document.f.aggr_type.value;
+    chart_type = document.f.type.value;
+    return;
+}
+
+update_link();
+</script>
+
+{% include "charts-app/chart_main_script.html" %}
