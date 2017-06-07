@@ -1,4 +1,4 @@
-function barChart(){
+function barChart(cat, qnt){
         var width = 860,
             height = 500,
             padding = 5,
@@ -7,7 +7,7 @@ function barChart(){
             colour = d3.scaleOrdinal(d3.schemeCategory20),
             x,
             y,
-            margin = { top: 15, bottom: 20, left: 50, right: 20 },
+            margin = { top: 15, bottom: 20, left: 60, right: 20 },
             xAxis = d3.axisBottom(xScale),
             yAxis = d3.axisLeft(yScale);
 
@@ -26,8 +26,8 @@ function barChart(){
                 .attr("transform",
                       "translate(" + margin.left + "," + margin.top +")");
 
-            var innerWidth = width - margin.left - margin.right;
-            var innerHeight = height - margin.top - margin.bottom;
+            var innerWidth = width - margin.left - margin.right - 20;
+            var innerHeight = height - margin.top - margin.bottom - 20;
 
             xScale
               .domain(data.map(function (d){ return d[x]; }))
@@ -44,11 +44,26 @@ function barChart(){
                 .attr("transform", "translate(0," + innerHeight +")")
                 .call(xAxis);
 
+            g.append("text")
+                .attr("transform", "translate(" + (innerWidth/2) + ", " + (innerHeight + margin.top + 20) + ")")
+                .style("font-size", "12px")
+                .style("text-anchor", "middle")
+                .text(cat);
+
             var yAxisG = g.selectAll(".y-axis").data([1]);
             yAxisG.enter().append("g")
                 .attr("class", "y-axis")
-              .merge(yAxisG)
+               .merge(yAxisG)
                 .call(yAxis);
+
+            g.append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("x", 0 - (innerHeight/2))
+                .attr("y", 0 - margin.left)
+                .attr("dy", "1em")
+                .style("font-size", "12px")
+                .style("text-anchor", "middle")
+                .text(qnt);
 
             var rects = g.selectAll("rect")
               .data(data);
