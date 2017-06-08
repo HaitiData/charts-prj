@@ -54,34 +54,40 @@ var getCsv = function(csv_link, category, quantity, agg, chartType){
 
 
                var dati;
+               var title;
                if (agg == 0){
                     dati = groupData_sum(dropZeros(data));
+                    title = "Sum";
                } else if (agg == 1){
-                    dati = groupData_mean(dropZeros(data));
+                    dati = groupData_mean(data);
+                    title = "Mean";
                } else if (agg == 2){
-                    dati = groupData_count(dropZeros(data));
+                    dati = groupData_count(data);
+                    title = "Count";
                } else if (agg == 3){
                     dati = groupData_max(dropZeros(data));
+                    title = "Maximum";
                } else if (agg == 4){
-                    dati = groupData_min(dropZeros(data));
+                    dati = groupData_min(data);
+                    title = "Minimum";
                };
 
                if (chartType == 0){
-                   var bar = barChart()
+                   var bar = barChart(category, quantity, title)
                    .x('key')
                    .y('value')
                    d3.select("#chart_area")
                         .datum(dati)
                         .call(bar);
                } else if (chartType == 1){
-                   var pie = pieChart(category, quantity)
+                   var pie = pieChart(category, quantity, title)
                    .variable('value')
                    .category('key')
                    d3.select('#chart_area')
                       .datum(dati)
                       .call(pie);
                } else if (chartType == 2){
-                   var donut = donutChart(category, quantity)
+                   var donut = donutChart(category, quantity, title)
                    .variable('value')
                    .category('key')
                    d3.select('#chart_area')

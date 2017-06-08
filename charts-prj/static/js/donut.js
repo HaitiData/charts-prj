@@ -1,4 +1,4 @@
-function donutChart(cat, qnt) {
+function donutChart(cat, qnt, title) {
     var width = 960,
         height = 500,
         margin = {top: 10, right: 10, bottom: 10, left: 10},
@@ -7,7 +7,8 @@ function donutChart(cat, qnt) {
         category, // compare data by
         padAngle = 0.015, // effectively dictates the gap between slices
         floatFormat = d3.format("." + d3.precisionFixed(0.5) + "f"),
-        cornerRadius = 3;
+        cornerRadius = 3
+
 
     function chart(selection){
         selection.each(function(data) {
@@ -101,6 +102,21 @@ function donutChart(cat, qnt) {
                     pos[0] = radius * 0.95 * (midAngle(d) < Math.PI ? 1 : -1);
                     return [arc.centroid(d), outerArc.centroid(d), pos]
                 });
+
+            var chart_title = function(){
+                                if (title == "Count"){
+                                    return title + " of elements for "  + cat;
+                                } else {
+                                  return title + " of " + qnt + " for " + cat;
+                                }};
+
+            svg.append("text")
+                .attr("x", 0)
+                .attr("y", 0 - (height/2) + 30)
+                .attr("text-anchor", "middle")
+                .style("font-size", "16px")
+                .style("text-decoration", "underline")
+                .text(chart_title);
             // ===========================================================================================
 
             // ===========================================================================================
@@ -143,6 +159,8 @@ function donutChart(cat, qnt) {
 
             // function to create the HTML string for the tool tip. Loops through each key in data object
             // and returns the html string key: value
+
+
             function toolTipHTML(data) {
 
                 var tip = '',
@@ -151,11 +169,14 @@ function donutChart(cat, qnt) {
                 for (var key in data.data) {
 
                     var value = (!isNaN(parseFloat(data.data[key]))) ? parseFloat(data.data[key]) : data.data[key];
+                    qnt = (title == "Count" ? "Count" : qnt);
+
 
                     // leave off 'dy' attr for first tspan so the 'dy' attr on text element works. The 'dy' attr on
                     // tspan effectively imitates a line break.
                     if (i === 0) tip += '<tspan x="0">' + cat + ': ' + value + '</tspan>';
-                    else tip += '<tspan x="0" dy="1.2em">' + qnt + ': ' + value + '</tspan>';
+                    else
+                    tip += '<tspan x="0" dy="1.2em">' + qnt + ': ' + value + '</tspan>';
                     i++;
                 }
 
