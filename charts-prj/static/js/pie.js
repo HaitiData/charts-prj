@@ -1,7 +1,7 @@
-function pieChart(cat, qnt) {
+function pieChart(cat, qnt, title) {
     var width = 960,
         height = 500,
-        margin = {top: 10, right: 10, bottom: 10, left: 10},
+        margin = {top: 10, right: 60, bottom: 10, left: 10},
         colour = d3.scaleOrdinal(d3.schemeCategory20), // colour scheme
         variable,
         category, // compare data by
@@ -102,6 +102,25 @@ function pieChart(cat, qnt) {
                     pos[0] = radius * 0.95 * (midAngle(d) < Math.PI ? 1 : -1);
                     return [arc.centroid(d), outerArc.centroid(d), pos]
                 });
+            var chart_title = function(){
+                                if (title == "Count"){
+                                    return title + " of elements for "  + cat;
+                                } else {
+                                  return title + " of " + qnt + " for " + cat;
+                                }};
+
+            svg.append("text")
+                .attr("x", 0)
+                .attr("y", 0 - (height / 2) + 20)
+                .attr("text-anchor", "middle")
+                .style("font-size", "16px")
+                .style("text-decoration", "underline")
+                .text(chart_title);
+            // ===========================================================================================
+
+            // ===========================================================================================
+            // add tooltip to mouse events on slices and labels
+            d3.selectAll('.labelName text, .slices path').call(toolTip);
             // ===========================================================================================
 
             // ===========================================================================================
@@ -110,6 +129,54 @@ function pieChart(cat, qnt) {
             // calculates the angle for the middle of a slice
             function midAngle(d) { return d.startAngle + (d.endAngle - d.startAngle) / 2; }
 
+            // function that creates and adds the tool tip to a selected element
+            function toolTip(selection) {
+
+                // add tooltip (svg circle element) when mouse enters label or slice
+                selection.on('mouseenter', function (data) {
+
+                var legend = svg.append("g")
+                                .attr("transform", "translate(" + (width/2) + "," + margin.top + ")")
+                    legend.append('text')
+                        .attr('class', 'toolrect')
+                        .attr('dy', 0 - (height / 2) + 30)// hard-coded. can adjust this to adjust text vertical alignment in tooltip
+                        .html(toolTipHTML(data)) // add text to the circle.
+                        .style('font-size', '.9em')
+                        .style("display", "inline-block")
+                        .style('text-anchor', 'end'); // centres text in tooltip
+
+                });
+                // remove the tooltip when mouse leaves the slice/label
+                selection.on('mouseout', function () {
+                    d3.selectAll('.toolrect').remove();
+                });
+            }
+
+            // function to create the HTML string for the tool tip. Loops through each key in data object
+            // and returns the html string key: value
+
+
+            function toolTipHTML(data) {
+
+                var tip = '',
+                    i   = 0;
+
+                for (var key in data.data) {
+
+                    var value = (!isNaN(parseFloat(data.data[key]))) ? parseFloat(data.data[key]) : data.data[key];
+                    qnt = (title == "Count" ? "Count" : qnt);
+
+
+                    // leave off 'dy' attr for first tspan so the 'dy' attr on text element works. The 'dy' attr on
+                    // tspan effectively imitates a line break.
+                    if (i === 0) tip += '<tspan x="0">' + cat + ': ' + value + '</tspan>';
+                    else
+                    tip += '<tspan x="0" dy="1.2em">' + qnt + ': ' + value + '</tspan>';
+                    i++;
+                }
+
+                return tip;
+            }
             // ===========================================================================================
 
         });
