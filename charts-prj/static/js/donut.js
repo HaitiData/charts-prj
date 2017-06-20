@@ -1,7 +1,7 @@
 function donutChart(cat, qnt, title) {
     var width = 960,
         height = 500,
-        margin = {top: 10, right: 10, bottom: 10, left: 10},
+        margin = {top: 30, right: 10, bottom: 10, left: 10},
         colour = d3.scaleOrdinal(d3.schemeCategory20), // colour scheme
         variable,
         category, // compare data by
@@ -103,7 +103,7 @@ function donutChart(cat, qnt, title) {
                     return [arc.centroid(d), outerArc.centroid(d), pos]
                 });
 
-            var chart_title = function(){
+                        var chart_title = function(){
                                 if (title == "Count"){
                                     return title + " of elements for "  + cat;
                                 } else {
@@ -126,6 +126,42 @@ function donutChart(cat, qnt, title) {
 
             // ===========================================================================================
             // Functions
+
+/*            // Constraint relaxed
+            alpha = 1;
+            spacing =  15;
+
+            function relax(){
+                again = false;
+                textLabels = svg.select('.labelName').selectAll('text');
+                textLabels.each(function(d, i){
+                    a = this;
+                    da = d3.select(a);
+                    y1 = da.attr("y");
+                    textLabels.each(function(d, j){
+                        b = this;
+                        if (a === b) return;
+                        db = d3.select(b);
+                        if (da.attr("text-anchor") != db.attr("text-anchor")) return;
+                        y2 = db.attr("y");
+                        deltaY = y1 - y2;
+                        if (Math.abs(deltaY) > spacing) return;
+                        again = true;
+                        sign = deltaY > 0 ? 1 : -1;
+                        adjust = sign*alpha;
+                        da.attr("y", +y1 + adjust);
+                        db.attr("y", +y2 - adjust);
+                        if (again){
+                            var labelElements = textLabels[0];
+                            polyline.attr("y2",function(d,i) {
+                                var labelForLine = d3.select(labelElements[i]);
+                            return labelForLine.attr("y");
+                            });
+                        setTimeout(relax, 20)}
+                    });
+                    });
+            };
+            relax();*/
 
             // calculates the angle for the middle of a slice
             function midAngle(d) { return d.startAngle + (d.endAngle - d.startAngle) / 2; }

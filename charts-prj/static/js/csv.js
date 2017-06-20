@@ -7,7 +7,12 @@ var getCsv = function(csv_link, category, quantity, agg, chartType){
                                 if (Object.keys(row)[i] == quantity){
                                     qnty_v = +Object.values(row)[i]
                                 } else if (Object.keys(row)[i] == category){
-                                    ctgy_v = Object.values(row)[i]
+                                        if (Object.values(row)[i].length >= 20){
+
+                                            ctgy_v = Object.values(row)[i].substring(0, 17) + "...";
+                                        } else {
+                                            ctgy_v = Object.values(row)[i];
+                                        };
                                 }
                             i++;
                             };
@@ -52,27 +57,36 @@ var getCsv = function(csv_link, category, quantity, agg, chartType){
                        .entries(dato);
                };
 
+               function descendent(a,b){
+                if (a.value < b.value) return 1;
+                if (a.value > b.value) return -1;
+               return 0;
+               }
 
                var dati;
                var title;
                if (agg == 0){
-                    dati = groupData_sum(dropZeros(data));
+                    dati = groupData_sum(dropZeros(data)).sort(descendent);
                     title = "Sum";
                } else if (agg == 1){
-                    dati = groupData_mean(data);
+                    dati = groupData_mean(data).sort(descendent);
                     title = "Mean";
                } else if (agg == 2){
-                    dati = groupData_count(data);
+                    dati = groupData_count(data).sort(descendent);
                     title = "Count";
                } else if (agg == 3){
-                    dati = groupData_max(dropZeros(data));
+                    dati = groupData_max(dropZeros(data)).sort(descendent);
                     title = "Maximum";
                } else if (agg == 4){
-                    dati = groupData_min(data);
+                    dati = groupData_min(data).sort(descendent);;
                     title = "Minimum";
                };
 
                if (chartType == 0){
+                   if (dati.length > 20){
+                        while (dati.length >= 20) { dati.pop(); };
+                        window.alert("Output limited to 20 categories");
+                   };
                    var bar = barChart(category, quantity, title)
                    .x('key')
                    .y('value')
@@ -80,6 +94,10 @@ var getCsv = function(csv_link, category, quantity, agg, chartType){
                         .datum(dati)
                         .call(bar);
                } else if (chartType == 1){
+                   if (dati.length > 10){
+                        while (dati.length >= 10) { dati.pop(); };
+                        window.alert("Output limited to 10 categories");
+                   };
                    var pie = pieChart(category, quantity, title)
                    .variable('value')
                    .category('key')
@@ -87,6 +105,10 @@ var getCsv = function(csv_link, category, quantity, agg, chartType){
                       .datum(dati)
                       .call(pie);
                } else if (chartType == 2){
+                   if (dati.length > 10){
+                        while (dati.length >= 10) { dati.pop(); };
+                        window.alert("Output limited to 10 categories");
+                   };
                    var donut = donutChart(category, quantity, title)
                    .variable('value')
                    .category('key')
