@@ -20,10 +20,12 @@ class Chart(models.Model):
     )
 
     layer = models.ForeignKey(Layer)
+    title = models.CharField(max_length=128, blank=True)
     category = models.CharField(max_length=200)
     quantity = models.CharField(max_length=200)
     type = models.SmallIntegerField(choices=CHART_TYPES, default=0)
     aggr_type = models.SmallIntegerField(choices=AGGREGATION_TYPES, default=3)
+    abstract = models.TextField(blank=True)
 
     def get_absolute_url(self):
         return reverse('chart_detail', kwargs={'pk': self.pk})
