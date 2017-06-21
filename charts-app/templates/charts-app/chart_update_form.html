@@ -14,7 +14,26 @@
 
 <form name="f" method="post" onchange="update_link();">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form.non_field_errors }}
+<div class="fieldWrapper">
+    {{ form.layer.as_hidden }}
+</div>
+<div class="fieldWrapper">
+    {{ form.category.as_hidden }}
+</div>
+<div class="fieldWrapper">
+    {{ form.quantity.as_hidden }}
+</div>
+<div class="fieldWrapper">
+    {{ form.type.errors }}
+    <label for="{{ form.type.id_for_label }}">Type:</label>
+    {{ form.type }}
+</div>
+<div class="fieldWrapper">
+    {{ form.aggr_type.errors }}
+    <label for="{{ form.aggr_type.id_for_label }}">Aggregation:</label>
+    {{ form.aggr_type }}
+</div>
     <input type="submit" value="Update Chart in DB"/>
 </form>
 
