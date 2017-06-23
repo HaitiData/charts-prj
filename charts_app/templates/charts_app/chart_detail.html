@@ -7,10 +7,16 @@
 <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
 <link rel="stylesheet" href="/static/css/index.css">
 
-<h1>{{ object.layer.title }}</h1>
+<h1>{{ object.title }}</h1>
+<h2>Source layer: {{ object.layer.title }}</h2>
+<h3>Category field: {{ object.category }}</h3>
+<h3>Quantity field: {{ object.quantity }}</h3>
 
 <div id="chart_area">
 </div>
+
+<h2>Abstract</h2>
+<p>{{ object.abstract }}</p>
 
 <a href="/table?" id="link">Download CSV</a>
 <br>
@@ -38,7 +44,7 @@ update_link();
 
 </script>
 
-{% include "charts-app/chart_main_script.html" %}
+{% include "charts_app/chart_main_script.html" %}
 
 <script>
 get_chart();

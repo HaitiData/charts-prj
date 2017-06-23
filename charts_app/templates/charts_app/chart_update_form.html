@@ -25,6 +25,11 @@
     {{ form.quantity.as_hidden }}
 </div>
 <div class="fieldWrapper">
+    {{ form.title.errors }}
+    <label for="{{ form.title.id_for_label }}">Title:</label>
+    {{ form.title }}
+</div>
+<div class="fieldWrapper">
     {{ form.type.errors }}
     <label for="{{ form.type.id_for_label }}">Type:</label>
     {{ form.type }}
@@ -33,6 +38,11 @@
     {{ form.aggr_type.errors }}
     <label for="{{ form.aggr_type.id_for_label }}">Aggregation:</label>
     {{ form.aggr_type }}
+</div>
+<div class="fieldWrapper">
+    {{ form.abstract.errors }}
+    <label for="{{ form.abstract.id_for_label }}">Abstract:</label>
+    {{ form.abstract }}
 </div>
     <input type="submit" value="Update Chart in DB"/>
 </form>
@@ -75,7 +85,7 @@ function update_link(){
 
 </script>
 
-{% include "charts-app/chart_main_script.html" %}
+{% include "charts_app/chart_main_script.html" %}
 
 <script>
 get_chart();

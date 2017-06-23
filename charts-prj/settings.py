@@ -31,7 +31,7 @@ DEBUG = True
 # Application definition
 
 INSTALLED_APPS = INSTALLED_APPS + (
-    'charts-app',
+    'charts_app',
     'wfs_harvest'
 )
 
