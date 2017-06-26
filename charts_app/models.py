@@ -1,7 +1,15 @@
 from django.db import models
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 
 from geonode.layers.models import Layer
+
+
+def validate_wfs(value):
+    lyr = Layer.objects.get(pk=value)
+    if lyr.service_type != 'WFS':
+        raise ValidationError(_('%(lyr_title)s is not a WFS layer'), params={'lyr_title': lyr.title})
 
 
 class Chart(models.Model):
@@ -19,7 +27,7 @@ class Chart(models.Model):
         (4, 'Min'),
     )
 
-    layer = models.ForeignKey(Layer)
+    layer = models.ForeignKey(Layer, validators=[validate_wfs])
     title = models.CharField(max_length=128, blank=True)
     category = models.CharField(max_length=200)
     quantity = models.CharField(max_length=200)
@@ -29,5 +37,3 @@ class Chart(models.Model):
 
     def get_absolute_url(self):
         return reverse('chart_detail', kwargs={'pk': self.pk})
-
-

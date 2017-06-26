@@ -16,6 +16,7 @@
     {% csrf_token %}
     {{ form.non_field_errors }}
 <div class="fieldWrapper">
+    {{ form.layer.errors }}
     {{ form.layer.as_hidden }}
 </div>
 <div class="fieldWrapper">
