@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.conf import settings
 
 from geonode.layers.models import Layer
 
@@ -55,7 +56,8 @@ def get_wfs_csv(request):
         'request':'GetFeature',
         'typename':typename,
         'propertyName':category_field + ',' + quantity_field,
-        'outputFormat':'csv'
+        'outputFormat':'csv',
+        'maxFeatures': str(settings.MAX_CSV_RECORDS)
     })
 
     lyr = Layer.objects.get(typename=typename)
