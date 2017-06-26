@@ -52,7 +52,7 @@ LOCALE_PATHS = (
 
 TEMPLATES[0]['DIRS'].insert(0, os.path.join(LOCAL_ROOT, "templates"))
 
-MAX_CSV_RECORDS = 2000
+MAX_CSV_RECORDS = 20000
 
 ALLOWED_HOSTS = ['*']
 PROXY_ALLOWED_HOSTS = ['*']
