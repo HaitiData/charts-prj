@@ -259,6 +259,7 @@
         <li class="list-group-item">
         {% if links or links_download %}
            <button class="btn btn-primary btn-md btn-block" data-toggle="modal" data-target="#download-layer">{% trans "Download Layer" %}</button>
+           <button class="btn btn-primary btn-md btn-block" data-toggle="modal" data-target="#chart_popup">Create Chart</button>
         {% else %}
           {% if request.user.is_authenticated %}
           <button class="btn btn-primary btn-md btn-block" id="request-download">{% trans "Request Download" %}</button>
@@ -271,7 +272,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title" id="myModalLabel">{% trans "Download Layer" %}</h4>
+            <h4 class="modal-title" id="myModalLabel">{% trans "Downloajnjnjjnd Layer" %}</h4>
           </div>
           <div class="modal-body">
             <div class="tabbable">
@@ -315,6 +316,7 @@
         </div>
       </div>
     </div>
+        <div class="modal fade" id="chart_popup"></div>
 
     {% if GEOSERVER_BASE_URL %}
       {% get_obj_perms request.user for resource.layer as "layer_perms" %}

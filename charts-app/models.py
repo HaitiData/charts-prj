@@ -8,7 +8,8 @@ class Chart(models.Model):
     CHART_TYPES = (
         (0, 'Bar chart'),
         (1, 'Pie chart'),
-        (2, 'Donut chart')
+        (2, 'Donut chart'),
+        (3, 'Line chart')
     )
 
     AGGREGATION_TYPES = (
@@ -16,7 +17,7 @@ class Chart(models.Model):
         (1, 'Mean'),
         (2, 'Category count'),
         (3, 'Max'),
-        (4, 'Min'),
+        (4, 'Min')
     )
 
     layer = models.ForeignKey(Layer)
