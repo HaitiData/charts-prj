@@ -31,11 +31,9 @@ DEBUG = True
 # Application definition
 
 INSTALLED_APPS = INSTALLED_APPS + (
-    'charts-app',
+    'charts_app',
     'wfs_harvest'
 )
-
-ROOT_URLCONF = 'charts-prj.urls'
 
 WSGI_APPLICATION = 'charts-prj.wsgi.application'
 
@@ -53,6 +51,8 @@ LOCALE_PATHS = (
     ) + LOCALE_PATHS
 
 TEMPLATES[0]['DIRS'].insert(0, os.path.join(LOCAL_ROOT, "templates"))
+
+MAX_CSV_RECORDS = 20000
 
 ALLOWED_HOSTS = ['*']
 PROXY_ALLOWED_HOSTS = ['*']

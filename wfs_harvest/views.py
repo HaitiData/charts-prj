@@ -3,6 +3,9 @@ import xml.etree.ElementTree as ET
 
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.conf import settings
+
+from geonode.layers.models import Layer
 
 
 def get_fields(request):
@@ -54,11 +57,13 @@ def get_wfs_csv(request):
         'typename':typename,
         'propertyName':category_field + ',' + quantity_field,
         'outputFormat':'csv',
-        'maxFeatures':'20000'
+        'maxFeatures': str(settings.MAX_CSV_RECORDS)
 
     })
-    
-    wfs_request = urllib.urlopen('http://localhost/geoserver/ows?%s' % params)
+
+    lyr = Layer.objects.get(typename=typename)
+    wfs_baseurl = lyr.link_set.get(link_type='OGC:WFS').url
+    wfs_request = urllib.urlopen(wfs_baseurl + '?%s' % params)
     content = wfs_request.read()    
     response = HttpResponse(content, content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="myfile.csv"'
