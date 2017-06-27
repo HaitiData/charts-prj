@@ -1,10 +1,9 @@
 function lineChart(cat, qnt, title){
         var width = 1200,
             height = 600,
-            padding = 5,
             xScale = d3.scaleBand(),
             yScale = d3.scaleLinear(),
-            colour = d3.scaleOrdinal(d3.schemeCategory20),
+            colour = "steelblue",
             x,
             y,
             margin = { top: 30, bottom: 30, left: 30, right: 120 },
@@ -49,7 +48,7 @@ function lineChart(cat, qnt, title){
             // rotate text if is longer than...
 
             d3.select(this).select(".x-axis").selectAll("text").each(function(){
-                if (this.getBBox().width > (xScale.bandwidth() - (padding*2)))
+                if (this.getBBox().width > xScale.bandwidth())
                     d3.selectAll("text").attr("transform", "rotate(-90)")
                                         .attr("y", 0)
                                         .attr("x", -10)
@@ -109,35 +108,48 @@ function lineChart(cat, qnt, title){
                 .style("font-size", "12px")
                 .style("text-anchor", "middle")
                 .text(yLabel);
+            //div for tooltip
+            var div = d3.select("body").append("div")
+                        .attr("class", "tooltip")
+                        .style("opacity", 0);
 
-            // bars
+
+            // lines
             var line = d3.line()
                         .x(function(d) { return xScale(d[x]); })
                         .y(function(d) { return yScale(d[y]); });
 
-             g.append("path")
-              .data(data)
+
+            g.append("path")
+              .data([data])
               .attr("fill", "none")
               .attr("stroke", "steelblue")
               .attr("stroke-linejoin", "round")
               .attr("stroke-linecap", "round")
               .attr("stroke-width", 1.5)
+              .attr("transform", "translate(" + (xScale.bandwidth() /2) + ", 0)")
               .attr("d", line);
 
-
-           /* var rects = g.selectAll("rect")
-              .data(data);
-            rects.exit().remove();
-            rects.enter().append("rect")
-              .merge(rects)
-                .attr("x", function (d){ return xScale(d[x]) + padding; })
-                .attr("y", function (d){ return yScale(d[y]); })
-                .attr("fill", function(d) { return colour(xScale(d[x])); })
-                .attr("width", xScale.bandwidth() - (padding*2))
-                .attr("height", function (d){
-                  return innerHeight() - yScale(d.value);
-                });*/
-
+            g.selectAll("dot")
+             .data(data)
+             .enter().append("circle")
+             .attr("r", 3.5)
+             .attr("transform", "translate(" + (xScale.bandwidth() /2) + ", 0)")
+             .attr("cx", function(d) { return xScale(d[x]); })
+             .attr("cy", function(d) { return yScale(d[y]); })
+             .on("mouseover", function(d){
+                 div.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+                 div.html(d.key + "<br/>" + d.value)
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px");
+                 })
+             .on("mouseout", function(d) {
+               div.transition()
+                .duration(500)
+                .style("opacity", 0);
+             });
 
             //chart title
             var chart_title = function(){
@@ -146,38 +158,9 @@ function lineChart(cat, qnt, title){
                                 } else {
                                   return title + " of " + qnt + " for " + cat;
                                 }};
-
-            svg.append("text")
-                .attr("x", (width / 2))
-                .attr("y", 0 + (margin.top / 2))
-                .attr("text-anchor", "middle")
-                .style("font-size", "16px")
-                .style("text-decoration", "underline")
-                .text(chart_title);
-
-            //chart legend
-            var legend = svg.selectAll(".legend")
-                .data(data)
-                .enter().append("g")
-                .attr("class", "legend")
-                .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-
-            legend.append("rect")
-                .attr("x", width - 18)
-                .attr("width", 18)
-                .attr("height", 18)
-                .style("fill", function(d) { return colour(xScale(d[x]))} );
-
-            legend.append("text")
-                .attr("x", width - 24)
-                .attr("y", 9)
-                .attr("dy", ".35em")
-                .style("text-anchor", "end")
-                .text(function (d){ return d[x] + ": " + floatFormat(d[y]); });
-
-
-          });
-        }
+            d3.select("h1").text(chart_title);
+                });
+    }
 
         my.x = function (_){
           return arguments.length ? (x = _, my) : x;
@@ -201,5 +184,3 @@ function lineChart(cat, qnt, title){
 
         return my;
       }
-
-

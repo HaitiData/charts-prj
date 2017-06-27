@@ -132,14 +132,7 @@ function barChart(cat, qnt, title){
                                 } else {
                                   return title + " of " + qnt + " for " + cat;
                                 }};
-
-            svg.append("text")
-                .attr("x", (width / 2))
-                .attr("y", 0 + (margin.top / 2))
-                .attr("text-anchor", "middle")
-                .style("font-size", "16px")
-                .style("text-decoration", "underline")
-                .text(chart_title);
+            d3.select("h1").text(chart_title);
 
             //chart legend
             var legend = svg.selectAll(".legend")
@@ -187,5 +180,3 @@ function barChart(cat, qnt, title){
 
         return my;
       }
-
-
