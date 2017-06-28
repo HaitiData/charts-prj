@@ -58,7 +58,6 @@ def get_wfs_csv(request):
         'propertyName':category_field + ',' + quantity_field,
         'outputFormat':'csv',
         'maxFeatures': str(settings.MAX_CSV_RECORDS)
-
     })
 
     lyr = Layer.objects.get(typename=typename)
