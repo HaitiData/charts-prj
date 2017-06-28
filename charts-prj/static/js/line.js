@@ -6,7 +6,7 @@ function lineChart(cat, qnt, title){
             colour = "steelblue",
             x,
             y,
-            margin = { top: 30, bottom: 30, left: 30, right: 120 },
+            margin = { top: 30, bottom: 30, left: 30, right: 30 },
             floatFormat = d3.format("." + d3.precisionFixed(0.5) + "f"),
             xAxis = d3.axisBottom(xScale),
             yAxis = d3.axisLeft(yScale);

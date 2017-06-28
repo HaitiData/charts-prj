@@ -259,7 +259,68 @@
         <li class="list-group-item">
         {% if links or links_download %}
            <button class="btn btn-primary btn-md btn-block" data-toggle="modal" data-target="#download-layer">{% trans "Download Layer" %}</button>
-           <button class="btn btn-primary btn-md btn-block" data-toggle="modal" data-target="#chart_popup">Create Chart</button>
+
+            <form name="f" method="post" onchange="update_link();" action="/chart/add/{{ resource.id }}/">
+    <input name="csrfmiddlewaretoken" value="lFcsR6C1E0pntUnprJchFVkWgqAcJnYo" type="hidden">
+
+<div class="fieldWrapper">
+
+    <input id="id_layer" name="layer" value="{{ resource.id }}" type="hidden">
+</div>
+<div class="fieldWrapper">
+
+    <label for="id_title">Title:</label>
+    <input id="id_title" maxlength="128" name="title" type="text">
+</div>
+<div class="fieldWrapper">
+
+    <label for="id_category">Category:</label>
+    <select id="id_category" name="category">
+    {% for attribute in resource.attributes %}
+        <option value={{ attribute.attribute }}>{{ attribute.attribute }}</option>
+    {% endfor %}
+    </select>
+</div>
+<div class="fieldWrapper">
+
+    <label for="id_quantity">Quantity:</label>
+    <select id="id_quantity" name="quantity">
+    {% for attribute in resource.attributes %}
+        {% if 'gml:' not in attribute.attribute_type and 'string' not in attribute.attribute_type%}
+        <option value={{ attribute.attribute }}>{{ attribute.attribute }}</option>
+        {% endif %}
+    {% endfor %}
+    </select>
+</div>
+<div class="fieldWrapper">
+
+    <label for="id_type">Type:</label>
+    <select id="id_type" name="type">
+<option value="0" selected="selected">Bar chart</option>
+<option value="1">Pie chart</option>
+<option value="2">Donut chart</option>
+<option value="3">Line chart</option>
+</select>
+</div>
+<div class="fieldWrapper">
+
+    <label for="id_aggr_type">Aggregation:</label>
+    <select id="id_aggr_type" name="aggr_type">
+<option value="0">Sum</option>
+<option value="1">Mean</option>
+<option value="2">Category count</option>
+<option value="3" selected="selected">Max</option>
+<option value="4">Min</option>
+</select>
+</div>
+<div class="fieldWrapper">
+
+    <label for="id_abstract">Abstract:</label>
+    <textarea cols="40" id="id_abstract" name="abstract" rows="10"></textarea>
+</div>
+
+</form>
+ <button class="btn btn-primary btn-md btn-block" data-toggle="modal" data-target="#chart_popup" onclick="get_chart()">Create Chart</button>
         {% else %}
           {% if request.user.is_authenticated %}
           <button class="btn btn-primary btn-md btn-block" id="request-download">{% trans "Request Download" %}</button>
@@ -316,7 +377,82 @@
         </div>
       </div>
     </div>
-        <div class="modal fade" id="chart_popup"></div>
+    <div id="chart_popup" class="modal fade" role="dialog" >
+    <script src="/static/js/csv.js"></script>
+    <script src="/static/js/donut.js"></script>
+    <script src="/static/js/bar.js"></script>
+    <script src="/static/js/pie.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/index.css">
+          <div class="modal-dialog" id="chart" style="width: 70%">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Titolo grafico</h4>
+                  <button type="button" onclick="get_chart()">create chart</button>
+                  <div id="chart_area" style="display: table; float: right;  width: 65%;">
+                  <script>
+                        var typename = "{{ resource.typename }}";
+                        var category;
+                        var quantity;
+                        var agg;
+                        var chart_type;
+                        var csv_url;
+
+                        function update_link_v1(){
+                            csv_url = '/table?lyrname=' + typename;
+                            csv_url = csv_url + '&category=' + category;
+                            csv_url = csv_url + '&quantity=' + quantity;
+
+                            return;
+                        }
+                        update_link_v1();
+
+                        function update_link(){
+                            csv_url = '/table?lyrname=' + typename;
+                            category = document.f.category.value;
+                            csv_url = csv_url + '&category=' + category;
+                            quantity = document.f.quantity.value;
+                            csv_url = csv_url + '&quantity=' + quantity;
+
+                            agg = document.f.aggr_type.value;
+                            chart_type = document.f.type.value;
+                            return;
+                        }
+
+                      function get_chart(){
+
+                        //create area for chart
+                        var createChartArea =  function() {
+                            var chartArea = document.getElementById("chart_area");
+                            chartArea.style= "display:table";
+                        };
+
+                        // update chart
+                        var replaceChart = function(){
+                            doc_chart = document.getElementById('chart_area');
+                            if(doc_chart.childElementCount >= 1){
+                                doc_chart.removeChild(doc_chart.childNodes[1]);
+                                createChartArea();
+                             };
+                        };
+
+                        createChartArea();
+                        replaceChart();
+                        getCsv(csv_url, category, quantity, agg, chart_type);
+                    }
+                  </script>
+              </div>
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+
+          </div>
+    </div>
 
     {% if GEOSERVER_BASE_URL %}
       {% get_obj_perms request.user for resource.layer as "layer_perms" %}
