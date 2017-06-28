@@ -7,7 +7,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from geonode.layers.models import Layer
 
-from .models import Chart
+from .models import Chart, ChartForm
 from wfs_harvest.utils import get_fields
 
 
@@ -16,8 +16,8 @@ class ChartDetailView(DetailView):
 
 
 class ChartCreate(CreateView):
-    model = Chart
-    fields = '__all__'
+    form_class = ChartForm
+    template_name = 'charts_app/chart_form.html'
 
     def get_initial(self):
         layer_id = self.kwargs['layer_id']
