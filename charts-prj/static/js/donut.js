@@ -1,6 +1,6 @@
 function donutChart(cat, qnt, title){
-    var width = 960,
-        height = 550,
+    var width = 900,
+        height = 500,
         margin = {top: 70, right: 10, bottom: 10, left: 10},
         colour = d3.scaleOrdinal(d3.schemeCategory20c), // colour scheme
         variable, // value in data that will dictate proportions on chart
@@ -41,6 +41,7 @@ function donutChart(cat, qnt, title){
             // append the svg object to the selection
             // var svg = selection.append('svg')
             var svg = selection.append('svg')
+                .attr("id", "chart_svg")
                 .attr('width', width + margin.left + margin.right)
                 .attr('height', height + margin.top + margin.bottom)
               .append('g')
@@ -87,19 +88,6 @@ function donutChart(cat, qnt, title){
                 .data(pie)
               .enter().append('polyline')
                 .attr('points', calculatePoints);
-            // ===========================================================================================
-
-            // ===========================================================================================
-            // add the chart title
-            // ===========================================================================================
-            var chart_title = function(){
-                                if (title == "Count"){
-                                    return title + " of elements for "  + cat;
-                                } else {
-                                  return title + " of " + qnt + " for " + cat;
-                                }};
-
-            d3.select("h1").text(chart_title);
             // ===========================================================================================
 
             // ===========================================================================================
