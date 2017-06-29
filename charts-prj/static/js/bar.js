@@ -1,13 +1,13 @@
-function barChart(cat, qnt, title){
-        var width = 1200,
-            height = 600,
+function barChart(cat, qnt, title, abs){
+        var width = 900,
+            height = 500,
             padding = 5,
             xScale = d3.scaleBand(),
             yScale = d3.scaleLinear(),
             colour = d3.scaleOrdinal(d3.schemeCategory20),
             x,
             y,
-            margin = { top: 30, bottom: 30, left: 30, right: 120 },
+            margin = { top: 30, bottom: 30, left: 30, right: 150 },
             floatFormat = d3.format("." + d3.precisionFixed(0.5) + "f"),
             xAxis = d3.axisBottom(xScale),
             yAxis = d3.axisLeft(yScale);
@@ -17,6 +17,7 @@ function barChart(cat, qnt, title){
           selection.each(function(data) {
 
             var svg = selection.append('svg')
+                .attr("id", "chart_svg")
                 .attr("width", width)
                 .attr("height", height);
 
@@ -68,7 +69,7 @@ function barChart(cat, qnt, title){
 
 
             g.append("text")
-                .attr("transform", "translate(" + ((innerWidth/2) - margin.left) + ", " + (innerHeight() + margin.bottom) + ")")
+                .attr("transform", "translate(" + (innerWidth/2) + ", " + (innerHeight() + margin.bottom - 5) + ")")
                 .style("font-size", "12px")
                 .style("text-anchor", "middle")
                 .text(cat);
@@ -124,16 +125,6 @@ function barChart(cat, qnt, title){
                   return innerHeight() - yScale(d.value);
                 });
 
-
-            //chart title
-            var chart_title = function(){
-                                if (title == "Count"){
-                                    return title + " of elements for "  + cat;
-                                } else {
-                                  return title + " of " + qnt + " for " + cat;
-                                }};
-            d3.select("h1").text(chart_title);
-
             //chart legend
             var legend = svg.selectAll(".legend")
                 .data(data)
@@ -154,6 +145,17 @@ function barChart(cat, qnt, title){
                 .style("text-anchor", "end")
                 .text(function (d){ return d[x] + ": " + floatFormat(d[y]); });
 
+/*            //chart abstract
+            var abstract = svg.selectAll(".abstract").data(data).enter().append("g")
+                .attr("class", "abstract")
+                .attr("transform", "translate(0," + 450 + ")");
+
+            abstract.append("text")
+                .attr("x", width - 24)
+                .attr("y", 9)
+                .attr("dy", ".35em")
+                .style("text-anchor", "end")
+                .text(abs);*/
 
           });
         }

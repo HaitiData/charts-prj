@@ -1,6 +1,6 @@
 function lineChart(cat, qnt, title){
-        var width = 1200,
-            height = 600,
+        var width = 900,
+            height = 500,
             xScale = d3.scaleBand(),
             yScale = d3.scaleLinear(),
             colour = "steelblue",
@@ -16,6 +16,7 @@ function lineChart(cat, qnt, title){
           selection.each(function(data) {
 
             var svg = selection.append('svg')
+                .attr("id", "chart_svg")
                 .attr("width", width)
                 .attr("height", height);
 
@@ -67,7 +68,7 @@ function lineChart(cat, qnt, title){
 
 
             g.append("text")
-                .attr("transform", "translate(" + ((innerWidth/2) - margin.left) + ", " + (innerHeight() + margin.bottom) + ")")
+                .attr("transform", "translate(" + (innerWidth/2) + ", " + (innerHeight() + margin.bottom - 5) + ")")
                 .style("font-size", "12px")
                 .style("text-anchor", "middle")
                 .text(cat);
@@ -140,10 +141,10 @@ function lineChart(cat, qnt, title){
              .on("mouseover", function(d){
                  div.transition()
                     .duration(200)
-                    .style("opacity", .9);
-                 div.html(d.key + "<br/>" + d.value)
+                    .style("opacity", 1);
+                 div.html(cat + ": " + d.key + "<br/>" + yLabel() + ": " + d.value)
                     .style("left", (d3.event.pageX) + "px")
-                    .style("top", (d3.event.pageY - 28) + "px");
+                    .style("top", (d3.event.pageY - 40) + "px");
                  })
              .on("mouseout", function(d) {
                div.transition()
@@ -151,14 +152,6 @@ function lineChart(cat, qnt, title){
                 .style("opacity", 0);
              });
 
-            //chart title
-            var chart_title = function(){
-                                if (title == "Count"){
-                                    return title + " of elements for "  + cat;
-                                } else {
-                                  return title + " of " + qnt + " for " + cat;
-                                }};
-            d3.select("h1").text(chart_title);
                 });
     }
 

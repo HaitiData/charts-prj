@@ -1,7 +1,7 @@
 function pieChart(cat, qnt, title){
-    var width = 960,
-        height = 550,
-        margin = {top: 70, right: 160, bottom: 10, left: 10},
+    var width = 900,
+        height = 500,
+        margin = {top: 80, right: 100, bottom: 10, left: 10},
         colour = d3.scaleOrdinal(d3.schemeCategory20c), // colour scheme
         variable, // value in data that will dictate proportions on chart
         category, // compare data by
@@ -39,8 +39,8 @@ function pieChart(cat, qnt, title){
 
             // ===========================================================================================
             // append the svg object to the selection
-            // var svg = selection.append('svg')
             var svg = selection.append('svg')
+                .attr("id", "chart_svg")
                 .attr('width', width + margin.left + margin.right)
                 .attr('height', height + margin.top + margin.bottom)
               .append('g')
@@ -87,19 +87,6 @@ function pieChart(cat, qnt, title){
                 .data(pie)
               .enter().append('polyline')
                 .attr('points', calculatePoints);
-            // ===========================================================================================
-
-            // ===========================================================================================
-            // add the chart title
-            // ===========================================================================================
-            var chart_title = function(){
-                                if (title == "Count"){
-                                    return title + " of elements for "  + cat;
-                                } else {
-                                  return title + " of " + qnt + " for " + cat;
-                                }};
-
-            d3.select("h1").text(chart_title);
             // ===========================================================================================
 
             // ===========================================================================================
@@ -186,7 +173,7 @@ function pieChart(cat, qnt, title){
                 selection.on('mouseenter', function (data) {
 
                     svg.append('rect')
-                        .attr('transform', "translate(420,-25)")
+                        .attr('transform', "translate(250, -200)")
                         .attr('class', 'toolRect')
                         .attr("width", 190)
                         .attr("height", 60)
@@ -194,7 +181,7 @@ function pieChart(cat, qnt, title){
                         .style('fill-opacity', 0.35);
 
                     svg.append('text')
-                        .attr('transform', "translate(600,0)")
+                        .attr('transform', "translate(400,-175)")
                         .attr('class', 'toolRect')
                         .html(toolTipHTML(data)) // add text to the rect
                         .style('font-size', '.9em')

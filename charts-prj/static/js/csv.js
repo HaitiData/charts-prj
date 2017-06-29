@@ -1,4 +1,4 @@
-var getCsv = function(csv_link, category, quantity, agg, chartType){
+var getCsv = function(csv_link, category, quantity, agg, chartType, abs){
                var data = [];
                d3.csv(csv_link, function(error, csv) {
                         if (error) throw error;
@@ -95,7 +95,7 @@ var getCsv = function(csv_link, category, quantity, agg, chartType){
                         while (dati.length >= 21) { dati.pop(); };
                         window.alert("Output limited to 20 categories");
                    };
-                   var bar = barChart(category, quantity, title)
+                   var bar = barChart(category, quantity, title, abs)
                    .x('key')
                    .y('value')
                    d3.select("#chart_area")
@@ -107,7 +107,7 @@ var getCsv = function(csv_link, category, quantity, agg, chartType){
                         while (dati.length >= 11) { dati.pop(); };
                         window.alert("Output limited to 10 categories");
                    };
-                   var pie = pieChart(category, quantity, title)
+                   var pie = pieChart(category, quantity, title, abs)
                    .variable('value')
                    .category('key')
                    d3.select('#chart_area')
@@ -119,7 +119,7 @@ var getCsv = function(csv_link, category, quantity, agg, chartType){
                         while (dati.length >= 11) { dati.pop(); };
                         window.alert("Output limited to 10 categories");
                    };
-                   var donut = donutChart(category, quantity, title)
+                   var donut = donutChart(category, quantity, title, abs)
                    .variable('value')
                    .category('key')
                    d3.select('#chart_area')
@@ -131,7 +131,7 @@ var getCsv = function(csv_link, category, quantity, agg, chartType){
                         while (dati.length >= 21) { dati.pop(); };
                         window.alert("Output limited to 20 categories");
                    };
-                   var line = lineChart(category, quantity, title)
+                   var line = lineChart(category, quantity, title, abs)
                    .x('key')
                    .y('value')
                    d3.select('#chart_area')
