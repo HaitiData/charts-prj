@@ -41,6 +41,9 @@ class ChartCreate(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         layer_id = self.kwargs['layer_id']
         layer = Layer.objects.get(pk=layer_id)
+        if not self.request.user.has_perm('download_resourcebase',
+                                          layer.get_self_resource()):
+            raise PermissionDenied
         fieldnames, num_fieldnames = get_fields(layer_id)
         ctx = super(ChartCreate, self).get_context_data(**kwargs)
         ctx['fieldnames'] = fieldnames
@@ -49,6 +52,10 @@ class ChartCreate(LoginRequiredMixin, CreateView):
         return ctx
 
     def form_valid(self, form):
+        if not self.request.user.has_perm(
+                'download_resourcebase',
+                form.instance.layer.get_self_resource()):
+            raise PermissionDenied
         form.instance.created_by = self.request.user
         return super(ChartCreate, self).form_valid(form)
 
