@@ -1,6 +1,7 @@
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 
 from geonode.layers.models import Layer
 
@@ -17,6 +18,14 @@ class LoginRequiredMixin(object):
 
 class ChartDetailView(DetailView):
     model = Chart
+
+    def get_object(self, queryset=None):
+        obj = super(ChartDetailView, self).get_object(queryset=queryset)
+        lyr_obj = Layer.objects.get(pk=obj.layer)
+        if not self.request.user.has_perm('download_resourcebase',
+                                          lyr_obj.get_self_resource()):
+            raise PermissionDenied
+        return obj
 
 
 class ChartCreate(LoginRequiredMixin, CreateView):
