@@ -1,9 +1,7 @@
-import csv
-
-from django.http import HttpResponse
-from django.shortcuts import render
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 
 from geonode.layers.models import Layer
 
@@ -11,11 +9,26 @@ from .models import Chart, ChartForm
 from wfs_harvest.utils import get_fields
 
 
+class LoginRequiredMixin(object):
+    @classmethod
+    def as_view(cls, **initkwargs):
+        view = super(LoginRequiredMixin, cls).as_view(**initkwargs)
+        return login_required(view)
+
+
 class ChartDetailView(DetailView):
     model = Chart
 
+    def get_object(self, queryset=None):
+        obj = super(ChartDetailView, self).get_object(queryset=queryset)
+        lyr_obj = Layer.objects.get(pk=obj.layer)
+        if not self.request.user.has_perm('download_resourcebase',
+                                          lyr_obj.get_self_resource()):
+            raise PermissionDenied
+        return obj
 
-class ChartCreate(CreateView):
+
+class ChartCreate(LoginRequiredMixin, CreateView):
     form_class = ChartForm
     template_name = 'charts_app/chart_form.html'
 
@@ -28,6 +41,9 @@ class ChartCreate(CreateView):
     def get_context_data(self, **kwargs):
         layer_id = self.kwargs['layer_id']
         layer = Layer.objects.get(pk=layer_id)
+        if not self.request.user.has_perm('download_resourcebase',
+                                          layer.get_self_resource()):
+            raise PermissionDenied
         fieldnames, num_fieldnames = get_fields(layer_id)
         ctx = super(ChartCreate, self).get_context_data(**kwargs)
         ctx['fieldnames'] = fieldnames
@@ -35,38 +51,46 @@ class ChartCreate(CreateView):
         ctx['layer'] = layer
         return ctx
 
+    def form_valid(self, form):
+        if not self.request.user.has_perm(
+                'download_resourcebase',
+                form.instance.layer.get_self_resource()):
+            raise PermissionDenied
+        form.instance.created_by = self.request.user
+        return super(ChartCreate, self).form_valid(form)
 
-class ChartUpdate(UpdateView):
+
+class ChartUpdate(LoginRequiredMixin, UpdateView):
     model = Chart
     fields = '__all__'
     template_name_suffix = '_update_form'
 
+    def get_object(self, queryset=None):
+        obj = super(ChartUpdate, self).get_object(queryset=queryset)
+        is_chart_owner = (self.request.user == obj.created_by)
+        lyr_obj = Layer.objects.get(pk=obj.layer)
+        is_lyr_owner = (self.request.user == lyr_obj.owner)
+        if not (self.request.user.is_superuser or is_chart_owner or
+                    is_lyr_owner):
+            raise PermissionDenied
+        return obj
 
-class ChartDelete(DeleteView):
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super(ChartUpdate, self).form_valid(form)
+
+
+class ChartDelete(LoginRequiredMixin, DeleteView):
     model = Chart
-    success_url = '/'
+    success_url = '/layers/'
 
+    def get_object(self, queryset=None):
+        obj = super(ChartDelete, self).get_object(queryset=queryset)
+        is_chart_owner = (self.request.user == obj.created_by)
+        lyr_obj = Layer.objects.get(pk=obj.layer)
+        is_lyr_owner = (self.request.user == lyr_obj.owner)
+        if not (self.request.user.is_superuser or is_chart_owner or
+                    is_lyr_owner):
+            raise PermissionDenied
+        return obj
 
-def pie_chart_v1(request):
-    return render(request, 'pie_chart_v1.html')
-
-
-def donut_chart_v1(request):
-    return render(request, 'donut_chart_v1.html')
-
-
-def pie_chart_v2(request):
-    qdict = request.GET
-    typename = qdict['lyrname']
-    category_field = qdict['category']
-    quantity_field = qdict['quantity']
-    context = {
-        'lyrname': typename,
-        'category': category_field,
-        'quantity': quantity_field
-    }
-    return render(request, 'pie_chart_v2.html', context)
-
-
-def donut_chart_v2(request):
-    return render(request, 'donut_chart_v2.html')

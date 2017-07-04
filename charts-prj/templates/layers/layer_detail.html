@@ -488,7 +488,7 @@
             <button class="btn btn-primary btn-md btn-block" data-toggle="collapse" data-target="#form" onclick="updateLinkAndTitle();">Create a chart</button>
           <div id="form" class="collapse">
               <form name="f" method="post" class="form-horizontal" onchange="updateLinkAndTitle();" action="/chart/add/{{ resource.id }}/">
-                    <input name="csrfmiddlewaretoken" value="lFcsR6C1E0pntUnprJchFVkWgqAcJnYo" type="hidden">
+                  {% csrf_token %}
                          <div class="form-group">
                              <input id="id_layer" name="layer" value="{{ resource.id }}" type="hidden">
                          </div>
