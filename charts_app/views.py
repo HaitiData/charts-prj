@@ -65,9 +65,32 @@ class ChartUpdate(LoginRequiredMixin, UpdateView):
     fields = '__all__'
     template_name_suffix = '_update_form'
 
+    def get_object(self, queryset=None):
+        obj = super(ChartUpdate, self).get_object(queryset=queryset)
+        is_chart_owner = (self.request.user == obj.created_by)
+        lyr_obj = Layer.objects.get(pk=obj.layer)
+        is_lyr_owner = (self.request.user == lyr_obj.owner)
+        if not (self.request.user.is_superuser or is_chart_owner or
+                    is_lyr_owner):
+            raise PermissionDenied
+        return obj
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super(ChartUpdate, self).form_valid(form)
+
 
 class ChartDelete(LoginRequiredMixin, DeleteView):
     model = Chart
-    success_url = '/'
+    success_url = '/layers/'
 
+    def get_object(self, queryset=None):
+        obj = super(ChartDelete, self).get_object(queryset=queryset)
+        is_chart_owner = (self.request.user == obj.created_by)
+        lyr_obj = Layer.objects.get(pk=obj.layer)
+        is_lyr_owner = (self.request.user == lyr_obj.owner)
+        if not (self.request.user.is_superuser or is_chart_owner or
+                    is_lyr_owner):
+            raise PermissionDenied
+        return obj
 
